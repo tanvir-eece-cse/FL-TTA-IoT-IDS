@@ -1,0 +1,107 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Data directories
+data/raw/
+data/processed/
+data/interim/
+data/external/
+*.parquet
+*.csv
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Experiment outputs
+experiments/
+experiments_quick/
+lightning_logs/
+wandb/
+outputs/
+multirun/
+logs/
+checkpoints/
+
+# Model files
+*.pt
+*.pth
+*.onnx
+*.pb
+
+# WandB
+wandb/
+.wandb/
+
+# Hydra
+.hydra/
+outputs/
+
+# Documentation builds
+_build/
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.synctex.gz
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Secrets
+*.key
+*.pem
+.env.local
+secrets.yaml

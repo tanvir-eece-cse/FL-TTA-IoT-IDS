@@ -1,0 +1,35 @@
+# Test configuration with tiny dataset subset
+# For verifying pipeline works before full training
+
+# Data
+batch_size: 256
+num_workers: 2
+label_column: label_binary
+
+# Model (smaller for testing)
+model:
+  architecture: mlp
+  hidden_dims: [128, 64]
+  dropout: 0.1
+
+# Training (minimal)
+learning_rate: 0.001
+weight_decay: 0.0001
+max_epochs: 2
+warmup_epochs: 1
+patience: 5
+
+# Federated Learning
+federated:
+  num_rounds: 3
+  local_epochs: 2
+  proximal_mu: 0.0
+
+# TTA
+tta:
+  lr: 0.0001
+  steps: 1
+  adapt_bn_only: true
+
+# No accumulation for testing
+accumulate_grad_batches: 1

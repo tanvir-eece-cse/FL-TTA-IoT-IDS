@@ -1,0 +1,38 @@
+# Full training configuration optimized for L40S GPU (48GB)
+# Maximizes GPU utilization for fastest training within credit budget
+
+# Data - Large batch size to utilize L40S fully
+batch_size: 8192  # L40S can handle large batches
+num_workers: 12   # Multiple workers for data loading
+label_column: label_binary
+
+# Model - MLP baseline (fast, effective)
+model:
+  architecture: mlp
+  hidden_dims: [1024, 512, 256, 128]  # Deeper network
+  dropout: 0.2
+
+# Training
+learning_rate: 0.002  # Higher LR for large batch
+weight_decay: 0.0001
+max_epochs: 100
+warmup_epochs: 10
+patience: 15
+
+# Federated Learning
+federated:
+  num_rounds: 80
+  local_epochs: 5
+  proximal_mu: 0.01  # Slight FedProx regularization
+
+# Test-Time Adaptation
+tta:
+  lr: 0.00005
+  steps: 1
+  adapt_bn_only: true
+  entropy_threshold: 0.28
+  fisher_alpha: 2000.0
+
+# L40S Optimizations
+accumulate_grad_batches: 1  # No accumulation needed with large batch
+precision: bf16-mixed

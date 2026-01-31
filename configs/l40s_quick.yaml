@@ -1,0 +1,50 @@
+# Quick validation config for Lightning AI L40S (1/4th training)
+# Fast validation run - uses 25% of data, fewer epochs
+# Estimated time: 30-45 minutes on L40S
+
+# Data - Moderate batch size for quick iteration
+batch_size: 4096  # Good L40S utilization
+num_workers: 8
+label_column: label_binary
+
+# Model - Slightly smaller for speed
+model:
+  architecture: mlp
+  hidden_dims: [512, 256, 128]
+  dropout: 0.2
+
+# Training - Reduced for quick validation
+learning_rate: 0.002
+weight_decay: 0.0001
+max_epochs: 15  # 1/4th of full training
+warmup_epochs: 3
+patience: 10
+
+# Federated Learning - Fewer rounds for quick test
+federated:
+  num_rounds: 20  # 1/4th of full training
+  local_epochs: 3
+  proximal_mu: 0.01
+
+# Test-Time Adaptation
+tta:
+  lr: 0.00005
+  steps: 1
+  adapt_bn_only: true
+  entropy_threshold: 0.28
+  fisher_alpha: 2000.0
+
+# L40S Optimizations
+accumulate_grad_batches: 1
+precision: bf16-mixed
+
+# WandB Logging
+wandb:
+  project: fl-tta-iot-ids
+  entity: null  # Will prompt for username
+  name: l40s_quick_validation
+  tags: ["quick", "l40s", "validation", "1/4th"]
+  notes: "Quick validation run on Lightning AI L40S GPU - 1/4th training for faster iteration"
+
+# Data sampling for quick run (25% of data)
+data_fraction: 0.25

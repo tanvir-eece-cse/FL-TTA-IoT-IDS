@@ -1,0 +1,36 @@
+# Default configuration for FL-TTA IoT IDS
+
+# Data
+batch_size: 4096
+num_workers: 8
+label_column: label_binary  # or label_multi
+
+# Model
+model:
+  architecture: mlp  # mlp, ft_transformer
+  hidden_dims: [512, 256, 128]
+  dropout: 0.2
+
+# Training
+learning_rate: 0.001
+weight_decay: 0.0001
+max_epochs: 50
+warmup_epochs: 5
+patience: 10
+
+# Federated Learning
+federated:
+  num_rounds: 50
+  local_epochs: 5
+  proximal_mu: 0.0  # 0 = FedAvg, >0 = FedProx
+
+# Test-Time Adaptation
+tta:
+  lr: 0.0001
+  steps: 1
+  adapt_bn_only: true
+  entropy_threshold: 0.28  # ~40% of binary entropy
+
+# L40S Optimizations
+accumulate_grad_batches: 1
+precision: bf16-mixed

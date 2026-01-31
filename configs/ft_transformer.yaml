@@ -1,0 +1,38 @@
+# FT-Transformer architecture for potentially higher performance
+# Uses more GPU memory but may achieve better results
+
+# Data
+batch_size: 4096  # Smaller batch for transformer
+num_workers: 8
+label_column: label_binary
+
+# Model - FT-Transformer
+model:
+  architecture: ft_transformer
+  embed_dim: 64
+  num_heads: 4
+  num_layers: 4
+  ff_dim: 256
+  dropout: 0.1
+
+# Training
+learning_rate: 0.0005  # Lower LR for transformer
+weight_decay: 0.01     # Higher regularization
+max_epochs: 80
+warmup_epochs: 10
+patience: 15
+
+# Federated Learning
+federated:
+  num_rounds: 60
+  local_epochs: 3
+  proximal_mu: 0.0
+
+# TTA
+tta:
+  lr: 0.00005
+  steps: 1
+  adapt_bn_only: false  # Adapt LayerNorm for transformer
+
+accumulate_grad_batches: 2  # Effective batch = 8192
+precision: bf16-mixed
