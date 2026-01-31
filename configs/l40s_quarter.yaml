@@ -1,0 +1,54 @@
+# =============================================================================
+# L40S QUARTER TRAINING CONFIG (1/4th of full training)
+# Optimized for ~15-20 minutes training on Lightning AI L40S ($1.49/hr)
+# Expected cost: ~$0.50 or less
+# =============================================================================
+
+# Data - MAXIMIZED batch size for L40S 48GB VRAM
+batch_size: 16384        # Double the default - L40S can easily handle this
+num_workers: 16          # Max workers for fastest data loading
+label_column: label_binary
+prefetch_factor: 4       # Prefetch more batches
+
+# Model - Efficient MLP (fast training, good accuracy)
+model:
+  architecture: mlp
+  hidden_dims: [768, 384, 192]  # Slightly smaller for speed
+  dropout: 0.15
+  use_batchnorm: true           # Required for TTA
+
+# Training - Aggressive settings for quick convergence
+learning_rate: 0.003      # Higher LR + large batch = faster convergence
+weight_decay: 0.0001
+max_epochs: 25            # 1/4 of 100 epochs
+warmup_epochs: 3          # Quick warmup
+patience: 8               # Early stop faster
+
+# Federated Learning - 1/4 of full rounds
+federated:
+  num_rounds: 20          # 1/4 of 80 rounds
+  local_epochs: 3         # Fewer local epochs per round
+  proximal_mu: 0.01       # FedProx for stability
+
+# Test-Time Adaptation
+tta:
+  lr: 0.0001
+  steps: 1
+  adapt_bn_only: true
+  entropy_threshold: 0.28
+  fisher_alpha: 2000.0
+  drift_window: 50
+  entropy_drift_threshold: 0.3
+
+# L40S GPU Optimizations - FULL UTILIZATION
+accumulate_grad_batches: 1    # No need with huge batch
+precision: bf16-mixed         # BF16 for 2x speed on L40S
+enable_tf32: true             # TF32 tensor cores
+cudnn_benchmark: true         # Auto-tune convolutions
+
+# WandB Logging
+wandb:
+  project: FL-TTA-IoT-IDS
+  entity: null                # Will use your default entity
+  tags: ["l40s", "quarter", "fl", "tta"]
+  log_model: true

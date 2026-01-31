@@ -1,38 +1,61 @@
-# Full training configuration optimized for L40S GPU (48GB)
-# Maximizes GPU utilization for fastest training within credit budget
+# =============================================================================
+# FULL TRAINING CONFIG - L40S GPU (48GB VRAM) MAXIMUM UTILIZATION
+# =============================================================================
+# Cost: $1.49/hr on Lightning AI
+# Expected time: ~2-3 hours for full training
+# Expected cost: ~$4-5 total
 
-# Data - Large batch size to utilize L40S fully
-batch_size: 8192  # L40S can handle large batches
-num_workers: 12   # Multiple workers for data loading
+# Data - MAXIMUM batch size for L40S 48GB VRAM
+batch_size: 32768         # L40S can handle 32K+ for tabular data
+num_workers: 16           # Max parallel data loading
+prefetch_factor: 4        # Prefetch batches
+persistent_workers: true  # Keep workers alive
+pin_memory: true          # Pin memory for faster transfers
 label_column: label_binary
 
-# Model - MLP baseline (fast, effective)
+# Model - Deep MLP (fast, effective for tabular)
 model:
   architecture: mlp
-  hidden_dims: [1024, 512, 256, 128]  # Deeper network
+  hidden_dims: [1024, 512, 256, 128]  # 4-layer deep network
   dropout: 0.2
+  use_batchnorm: true     # Required for TTA
 
-# Training
-learning_rate: 0.002  # Higher LR for large batch
+# Training - Optimized for large batch
+learning_rate: 0.004      # Scale LR with batch size (linear scaling)
 weight_decay: 0.0001
 max_epochs: 100
-warmup_epochs: 10
+warmup_epochs: 10         # Gradual warmup for large batch
 patience: 15
 
 # Federated Learning
 federated:
   num_rounds: 80
   local_epochs: 5
-  proximal_mu: 0.01  # Slight FedProx regularization
+  proximal_mu: 0.01       # FedProx regularization
+  fraction_fit: 1.0       # Use all clients each round
 
 # Test-Time Adaptation
 tta:
+  method: drift_aware     # Use drift-aware TTA
   lr: 0.00005
   steps: 1
   adapt_bn_only: true
   entropy_threshold: 0.28
   fisher_alpha: 2000.0
+  drift_window: 100
+  entropy_drift_threshold: 0.3
 
-# L40S Optimizations
-accumulate_grad_batches: 1  # No accumulation needed with large batch
-precision: bf16-mixed
+# L40S GPU Optimizations - FULL UTILIZATION
+accumulate_grad_batches: 1    # No accumulation needed
+precision: bf16-mixed         # BF16 for 2x throughput
+enable_tf32: true             # TF32 tensor cores (huge speedup)
+cudnn_benchmark: true         # Auto-tune algorithms
+compile_model: false          # torch.compile (optional, can be unstable)
+
+# WandB Logging
+wandb:
+  project: FL-TTA-IoT-IDS
+  entity: null
+  tags: ["l40s", "full", "fl", "tta"]
+  log_model: true
+  log_freq: 10

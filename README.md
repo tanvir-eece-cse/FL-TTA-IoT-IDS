@@ -15,28 +15,10 @@
 
 ### Hardware Requirements
 - Lightning AI L40S GPU (48GB VRAM)
-- Quick validation (1/4 training): ~30-45 minutes
-- Full training: ~8-10 hours (fits 15 credits @ $1.79/hr)
+- ~8-10 hours training time (fits 15 credits @ 1.79/hr)
 
-## Quick Start (Lightning AI L40S - Recommended)
+## Quick Start
 
-### Option A: Quick Validation (1/4th training - FASTEST)
-```bash
-# 1. One-command setup (installs deps + downloads data)
-python setup_lightning.py
-
-# 2. Run quick training with WandB logging
-python train_lightning_quick.py --wandb-key YOUR_WANDB_KEY
-
-# Or without WandB
-python train_lightning_quick.py --skip-wandb
-```
-
-**Time estimate:** 30-45 minutes total (setup + training)  
-**Cost:** ~$1-2 on Lightning AI  
-**Output:** Validation metrics, trained model, WandB dashboard
-
-### Option B: Full Training (all scenarios, all epochs)
 ```bash
 # 1. Setup environment
 pip install -r requirements.txt
@@ -47,23 +29,11 @@ python scripts/download_iot23.py --subset small
 # 3. Preprocess and create client splits
 python scripts/preprocess.py --config configs/iot23_federated.yaml
 
-# 4. Full training on L40S
-python train.py --mode federated_tta --config configs/l40s_full.yaml --tta drift_aware
-```
+# 4. Test with tiny subset (verification)
+python train.py --config configs/test_tiny.yaml --max_epochs 2
 
-**Time estimate:** 8-10 hours  
-**Cost:** ~$15-20 on Lightning AI
-
-## Local Quick Start
-```bash
-# 1. Setup environment
-pip install -r requirements.txt
-
-# 2. Download real IoT-23 test data (2 scenarios, ~1.5MB)
-python test_real_iot23.py
-
-# 3. Test pipeline (uses downloaded data)
-python train.py --mode federated --data_dir data/processed/iot23_real --fl_rounds 2
+# 5. Full training on L40S
+python train.py --config configs/l40s_full.yaml
 ```
 
 ## Project Structure
