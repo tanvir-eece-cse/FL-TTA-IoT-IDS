@@ -1023,13 +1023,27 @@ def main():
         'feature_columns': feature_columns
     }, output_dir / "model_final.pt")
     
+    # Convert numpy types to Python native types for JSON serialization
+    def convert_to_serializable(obj):
+        if isinstance(obj, dict):
+            return {k: convert_to_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_to_serializable(v) for v in obj]
+        elif isinstance(obj, (np.floating, np.float32, np.float64)):
+            return float(obj)
+        elif isinstance(obj, (np.integer, np.int32, np.int64)):
+            return int(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return obj
+    
     with open(output_dir / "results.json", 'w') as f:
-        json.dump({
+        json.dump(convert_to_serializable({
             'config': config,
             'history': history,
             'test_results': test_results,
             'training_time_minutes': (time.time() - start_time) / 60
-        }, f, indent=2)
+        }), f, indent=2)
     
     # Final summary
     total_time = time.time() - start_time
