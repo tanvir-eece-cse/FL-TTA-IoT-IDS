@@ -1025,15 +1025,16 @@ def main():
     
     # Convert numpy types to Python native types for JSON serialization
     def convert_to_serializable(obj):
+        import numpy as np_local
         if isinstance(obj, dict):
             return {k: convert_to_serializable(v) for k, v in obj.items()}
         elif isinstance(obj, list):
             return [convert_to_serializable(v) for v in obj]
-        elif isinstance(obj, (np.floating, np.float32, np.float64)):
+        elif isinstance(obj, (np_local.floating, np_local.float32, np_local.float64)):
             return float(obj)
-        elif isinstance(obj, (np.integer, np.int32, np.int64)):
+        elif isinstance(obj, (np_local.integer, np_local.int32, np_local.int64)):
             return int(obj)
-        elif isinstance(obj, np.ndarray):
+        elif isinstance(obj, np_local.ndarray):
             return obj.tolist()
         return obj
     
