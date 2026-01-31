@@ -805,7 +805,7 @@ def evaluate_with_tta(model, data_dir: Path, scaler, config: dict, device, wandb
             x = x.to(device)
             with autocast(dtype=torch.bfloat16):
                 logits = model(x)
-            probs = F.softmax(logits, dim=1)
+            probs = F.softmax(logits.float(), dim=1)  # Convert to float32
             entropy = -(probs * torch.log(probs + 1e-8)).sum(dim=1)
             all_entropies.extend(entropy.cpu().numpy())
     
@@ -827,7 +827,7 @@ def evaluate_with_tta(model, data_dir: Path, scaler, config: dict, device, wandb
         with torch.no_grad():
             with autocast(dtype=torch.bfloat16):
                 logits = model(x)
-            probs = F.softmax(logits, dim=1)
+            probs = F.softmax(logits.float(), dim=1)  # Convert to float32
             entropy = -(probs * torch.log(probs + 1e-8)).sum(dim=1).mean()
         
         # Apply TTA if entropy is high (uncertain predictions)
